@@ -4,6 +4,7 @@
 #include "MathTools.h"
 
 #include "Animable_I_GPU.h"
+#include "Sphere.h"
 using namespace gpu;
 
 /*----------------------------------------------------------------------*\
@@ -24,7 +25,7 @@ class RayTracing: public Animable_I<uchar4>
 
 	RayTracing(const Grid& grid, uint w, uint h, float dt);
 	virtual ~RayTracing(void);
-
+	void toGM(Sphere* ptrDevTabSphere);
 	/*--------------------------------------*\
 	 |*		Methodes		*|
 	 \*-------------------------------------*/
@@ -51,8 +52,15 @@ class RayTracing: public Animable_I<uchar4>
 
     private:
 
-	// Inputs
+	// Time
 	float dt;
+
+	// Inputs
+	uint nbSphere;
+	Sphere* ptrDevTabSphere;
+
+	//Tools
+	size_t sizeOctet;
 
     };
 

@@ -37,9 +37,9 @@ __global__ void rayTracing(uchar4* ptrDevPixels,uint w, uint h,float t);
  |*		Public			*|
  \*-------------------------------------*/
 
-__global__ void rayTracing(uchar4* ptrDevPixels, uint w, uint h, float t)
+__global__ void rayTracing(uchar4* ptrDevPixels, int nbspheres, Sphere* ptrDevTabSphere, uint w, uint h, float t)
     {
-    RayTracingMath rayTracingMath = RayTracingMath(w, h);
+    RayTracingMath rayTracingMath = RayTracingMath(nbspheres, ptrDevTabSphere);
 
     const int WH=w*h;
     const int TID = Indice2D::tid();

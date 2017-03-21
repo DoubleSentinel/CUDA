@@ -12,9 +12,10 @@ class Sphere
 	    // Inputs
 	    this->centre = centre;
 	    this->r = rayon;
-	    this->hue = hue;
+	    this->hueStart = hue;
 	    // Tools
 	    this->rCarre = rayon * rayon;
+	    this->T = asinf(2*hueStart-1)-3*PI_FLOAT/2;
 	    }
 	    /**
 	     * required by example for new Sphere[n]
