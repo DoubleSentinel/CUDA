@@ -50,7 +50,7 @@ int main(int argc, char** argv)
     // Server Cuda3: in [0,2]	(2 Devices)
     int DEVICE_ID = 0;
 
-    LaunchMode launchMode = LaunchMode::IMAGE; // IMAGE  ANIMABLE  BARIVOX FORCEBRUT
+    LaunchMode launchMode = LaunchMode::ANIMABLE; // IMAGE  ANIMABLE  BARIVOX FORCEBRUT
     Settings settings(launchMode, DEVICE_ID, argc, argv);
 
     return use(settings);
@@ -90,7 +90,7 @@ void initCuda(Settings& settings)
 
     // It can be usefull to preload driver, by example to practice benchmarking! (sometimes slow under linux)
     Device::loadCudaDriver(deviceId);
-    // Device::loadCudaDriverAll();// Force driver to be load for all GPU
+//    Device::loadCudaDriverAll();// Force driver to be load for all GPU
     }
 
 int start(Settings& settings)

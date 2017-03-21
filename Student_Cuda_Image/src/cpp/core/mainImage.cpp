@@ -6,6 +6,7 @@
 #include "cudaTools.h"
 
 #include "RipplingProvider.h"
+#include "RayTracingProvider.h"
 
 #include "Settings_GPU.h"
 #include "Viewer_GPU.h"
@@ -52,7 +53,7 @@ int mainImage(Settings& settings)
     ImageOption nozoomable(false);
 
     Viewer<RipplingProvider> vague(nozoomable, 25, 25); // imageOption px py
-
+//    Viewer<RayTracingProvider> raytracing(nozoomable, 25, 25);
     // Common
     GLUTImageViewers::runALL(); // Bloquant, Tant qu'une fenetre est ouverte
 

@@ -45,19 +45,29 @@ RayTracing::RayTracing(const Grid& grid, uint w, uint h, float dt) :
     // Time
     this->dt = dt;
 
+    // Grid
+    this->dg = grid.dg;
+    this->db = grid.db;
+
     // Inputs
     this->t = 0; // protected dans Animable
     this->nbSphere = 30;
     this->sizeOctet = sizeof(Sphere)*nbSphere;
-
     SphereCreator sphereCreator(nbSphere, w, h);
     Sphere* ptrTabSphere = sphereCreator.getTabSphere();
-    this->toGM(ptrTabSphere);
+
+    // MM
+	{
+	Device::malloc(&ptrDevTabSphere, sizeOctet);
+	Device::memclear(&ptrDevTabSphere, sizeOctet);
+	Device::memcpyHToD(ptrDevTabSphere, ptrTabSphere, sizeOctet);
+	}
+
     }
 
 RayTracing::~RayTracing()
     {
-    // rien
+    Device::free(&ptrDevTabSphere);
     }
 
 /*-------------------------*\
@@ -74,7 +84,7 @@ void RayTracing::process(uchar4* ptrDevPixels, uint w, uint h, const DomaineMath
     {
     Device::lastCudaError("rayTracing rgba uchar4 (before)"); // facultatif, for debug only, remove for release
 
-    rayTracing<<<dg,db>>>(ptrDevPixels,this->nbSpheres, this->ptrDevTabSphere, w,h,t);
+    rayTracing<<<dg,db>>>(ptrDevPixels, this->nbSphere, this->ptrDevTabSphere,w,h,t);
 
     Device::lastCudaError("rayTracing rgba uchar4 (after)"); // facultatif, for debug only, remove for release
     }
@@ -90,8 +100,8 @@ void RayTracing::animationStep()
 
 void RayTracing::toGM(Sphere* ptrTabSphere)
     {
-    Device::memclear(&ptrDevTabSphere, sizeOctet);
     Device::malloc(&ptrDevTabSphere, sizeOctet);
+    Device::memclear(&ptrDevTabSphere, sizeOctet);
     Device::memcpyHToD(ptrDevTabSphere, ptrTabSphere, sizeOctet);
     }
 

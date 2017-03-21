@@ -62,6 +62,10 @@ class RayTracing: public Animable_I<uchar4>
 	//Tools
 	size_t sizeOctet;
 
+	//Grid
+	dim3 dg;
+	dim3 db;
+
     };
 
 /*----------------------------------------------------------------------*\
