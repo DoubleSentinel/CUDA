@@ -41,7 +41,6 @@ class RayTracingMath
 	|*		Methodes		*|
 	 \*-------------------------------------*/
 
-    public:
 
 	__device__
 	void colorIJ(uchar4* ptrColor, int i, int j, float t)
@@ -53,9 +52,9 @@ class RayTracingMath
 	    ptrColor->y = 0;
 	    ptrColor->z = 0;
 	    ptrColor->w = 255; // opaque
-	    float min = 100000.f;
+	    float min = 10000.f;
 	    float hueMin = -10000.f;
-	    float brightnessMin = -100000.f;
+	    float brightnessMin = -10000.f;
 	    for (int k = 0; k < nb_Spheres; k++)
 		{
 		Sphere spherek = this->ptrDevTabSphere[k];
@@ -77,10 +76,8 @@ class RayTracingMath
 		{
 		ColorTools::HSB_TO_RVB(hueMin,1.f, brightnessMin, ptrColor);
 		}
-
 	    }
 
-    private:
 
 	/*--------------------------------------*\
 	|*		Attributs		*|

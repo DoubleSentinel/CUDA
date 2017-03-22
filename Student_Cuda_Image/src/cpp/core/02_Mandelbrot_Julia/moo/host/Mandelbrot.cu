@@ -13,7 +13,7 @@ using std::endl;
  |*		Imported	 	*|
  \*-------------------------------------*/
 
-extern __global__ void mandelbrot(uchar4* ptrDevPixels,uint w, uint h,float t, uint n, DomaineMath domaineMath);
+extern __global__ void mandelbrot(uchar4* ptrDevPixels,uint w, uint h,float t, DomaineMath domaineMath);
 
 /*--------------------------------------*\
  |*		Public			*|
@@ -32,13 +32,14 @@ extern __global__ void mandelbrot(uchar4* ptrDevPixels,uint w, uint h,float t, u
  \*-------------------------------------*/
 
 Mandelbrot::Mandelbrot(const Grid& grid, uint w, uint h, float t, uint n, const DomaineMath &domaineMath) :
-	Animable_I<uchar4>(grid, w, h, "Mandelbrot_CUDA_Luy")
+	Animable_I<uchar4>(grid, w, h, "Mandelbrot_CUDA_Luy", domaineMath),
+	variateurAnimation(Interval<uint>(5, 250), t)
     {
     // Inputs
     this->n = n;
 
     // Tools
-    this->t = t;
+    this->t = 0;
     }
 
 Mandelbrot::~Mandelbrot(void)
@@ -55,7 +56,7 @@ Mandelbrot::~Mandelbrot(void)
  */
 void Mandelbrot::animationStep()
     {
-    this->t += t;
+    this->t = variateurAnimation.varierAndGet();
     }
 
 /*--------------------------------------*\
@@ -70,7 +71,7 @@ void Mandelbrot::process(uchar4* ptrDevPixels, uint w, uint h, const DomaineMath
     {
     Device::lastCudaError("mandelbrot rgba uchar4 (before)"); // facultatif, for debug only, remove for release
 
-    mandelbrot<<<dg,db>>>(ptrDevPixels,w,h,t,n, domaineMath);
+    mandelbrot<<<dg,db>>>(ptrDevPixels,w,h,this->t,domaineMath);
 
     Device::lastCudaError("mandelbrot rgba uchar4 (after)"); // facultatif, for debug only, remove for release
     }

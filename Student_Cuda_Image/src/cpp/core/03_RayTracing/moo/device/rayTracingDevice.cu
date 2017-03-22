@@ -23,7 +23,7 @@ using namespace gpu;
  |*		Public			*|
  \*-------------------------------------*/
 
-__global__ void rayTracing(uchar4* ptrDevPixels,uint w, uint h,float t);
+__global__ void rayTracing(uchar4* ptrDevPixels, int nbspheres, Sphere* ptrDevTabSphere, uint w, uint h, float t);
 
 /*--------------------------------------*\
  |*		Private			*|

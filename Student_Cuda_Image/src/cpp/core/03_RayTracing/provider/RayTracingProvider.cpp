@@ -35,10 +35,10 @@
 Animable_I<uchar4>* RayTracingProvider::createAnimable()
     {
     // Animation;
-    float dt = 2 * PI / 1000;
+    float dt = 2 * PI_FLOAT / 1000; //0.001
 
     // Dimension
-    int dw = 16 * 60 * 2;
+    int dw = 16 * 60;
     int dh = 16 * 60;
 
     // Grid Cuda

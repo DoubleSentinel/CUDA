@@ -45,12 +45,9 @@ RayTracing::RayTracing(const Grid& grid, uint w, uint h, float dt) :
     // Time
     this->dt = dt;
 
-    // Grid
-    this->dg = grid.dg;
-    this->db = grid.db;
     // Inputs
     this->t = 0; // protected dans Animable
-    this->nbSphere = 30;
+    this->nbSphere = 2;
     this->sizeOctet = sizeof(Sphere)*nbSphere;
     SphereCreator sphereCreator(nbSphere, w, h);
     Sphere* ptrTabSphere = sphereCreator.getTabSphere();

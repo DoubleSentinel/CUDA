@@ -23,7 +23,7 @@ class MandelbrotMath
 
     public:
 
-	__device__ MandelbrotMath(uint N):
+	__device__ MandelbrotMath(uint n):
 	    calibreur(Interval<float>(0, n), Interval<float>(0, 1))
 	    {
 	    this->n = n;
@@ -42,10 +42,10 @@ class MandelbrotMath
 
     public:
 	__device__
-	void colorXY(uchar4 *ptrColor, float x, float y, float t)
+	void colorXY(uchar4 *ptrColor, double x, double y)
 	    {
 	    float k = getK(x, y);
-	    if(k > this->n)
+	    if(k < 0)
 	    {
 		ptrColor->x = 0;
 		ptrColor->y = 0;
@@ -68,7 +68,7 @@ class MandelbrotMath
 	    }
 
 	__device__
-	int getK(float x, float y)
+	int getK(double x, double y)
 	    {
 	    float zr = 0.f;
 	    float zi = 0.f;
@@ -80,18 +80,18 @@ class MandelbrotMath
 			return k;
 
 		old_zr = zr;
-		zr = pow(zr, 2) - pow(zi, 2) + x;
+		zr = zr*zr - zi*zi + x;
 		zi = 2 * old_zr * zi + y;
 
 		k++;
 		}
-	    return k;
+	    return -1;
 	    }
 
 	__device__
 	float norm(float a, float b)
 	    {
-	    return sqrt(pow(a, 2) + pow(b, 2));
+	    return a*a + b*b;
 	    }
 
 	/*--------------------------------------*\

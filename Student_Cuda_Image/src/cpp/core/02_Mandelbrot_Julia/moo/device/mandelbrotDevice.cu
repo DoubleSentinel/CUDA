@@ -24,7 +24,7 @@ using namespace gpu;
  |*		Public			*|
  \*-------------------------------------*/
 
-__global__ void mandelbrot(uchar4* ptrDevPixels,uint w, uint h,float t);
+__global__ void mandelbrot(uchar4* ptrDevPixels,uint w, uint h,float t, DomaineMath d);
 
 /*--------------------------------------*\
  |*		Private			*|
@@ -38,9 +38,9 @@ __global__ void mandelbrot(uchar4* ptrDevPixels,uint w, uint h,float t);
  |*		Public			*|
  \*-------------------------------------*/
 __global__ void mandelbrot(uchar4* ptrDevPixels, uint w, uint h, float t,
-		uint n, DomaineMath domaineMath)
+		DomaineMath domaineMath)
     {
-    MandelbrotMath mandelbrotMath = MandelbrotMath(n);
+    MandelbrotMath mandelbrotMath = MandelbrotMath(t);
 
     const int TID = Indice2D::tid();
     const int NB_THREAD = Indice2D::nbThread();
@@ -48,14 +48,14 @@ __global__ void mandelbrot(uchar4* ptrDevPixels, uint w, uint h, float t,
 
     uchar4 color;
     double x, y;
-    int i, j;
+    int i, j = 0;
 
     int s = TID;
     while (s < WH)
 	{
 	IndiceTools::toIJ(s, w, &i, &j);
 	domaineMath.toXY(i, j, &x, &y);
-	mandelbrotMath.colorXY(&color, x, y, t);
+	mandelbrotMath.colorXY(&color, x, y);
 	ptrDevPixels[s] = color;
 	s += NB_THREAD;
 	}

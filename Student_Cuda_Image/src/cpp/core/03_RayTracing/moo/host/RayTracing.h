@@ -25,7 +25,6 @@ class RayTracing: public Animable_I<uchar4>
 
 	RayTracing(const Grid& grid, uint w, uint h, float dt);
 	virtual ~RayTracing(void);
-	void toGM(Sphere* ptrDevTabSphere);
 	/*--------------------------------------*\
 	 |*		Methodes		*|
 	 \*-------------------------------------*/
@@ -61,10 +60,6 @@ class RayTracing: public Animable_I<uchar4>
 
 	//Tools
 	size_t sizeOctet;
-
-	//Grid
-	dim3 dg;
-	dim3 db;
 
     };
 

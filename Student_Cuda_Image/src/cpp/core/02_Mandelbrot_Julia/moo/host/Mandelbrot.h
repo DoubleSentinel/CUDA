@@ -3,6 +3,8 @@
 #include "cudaTools.h"
 
 #include "Animable_I_GPU.h"
+#include "Variateur_GPU.h"
+
 using namespace gpu;
 
 /*----------------------------------------------------------------------*\
@@ -57,7 +59,8 @@ class Mandelbrot: public Animable_I<uchar4>
 	// Inputs
 	uint n;
 	float t;
-
+	// TOOLS
+        Variateur<uint> variateurAnimation;
     };
 
 /*----------------------------------------------------------------------*\
