@@ -48,26 +48,23 @@ RayTracing::RayTracing(const Grid& grid, uint w, uint h, float dt) :
     // Grid
     this->dg = grid.dg;
     this->db = grid.db;
-
     // Inputs
     this->t = 0; // protected dans Animable
     this->nbSphere = 30;
     this->sizeOctet = sizeof(Sphere)*nbSphere;
     SphereCreator sphereCreator(nbSphere, w, h);
     Sphere* ptrTabSphere = sphereCreator.getTabSphere();
-
     // MM
 	{
 	Device::malloc(&ptrDevTabSphere, sizeOctet);
-	Device::memclear(&ptrDevTabSphere, sizeOctet);
+	Device::memclear(ptrDevTabSphere, sizeOctet);
 	Device::memcpyHToD(ptrDevTabSphere, ptrTabSphere, sizeOctet);
 	}
-
     }
 
 RayTracing::~RayTracing()
     {
-    Device::free(&ptrDevTabSphere);
+    Device::free(ptrDevTabSphere);
     }
 
 /*-------------------------*\
@@ -96,13 +93,6 @@ void RayTracing::process(uchar4* ptrDevPixels, uint w, uint h, const DomaineMath
 void RayTracing::animationStep()
     {
     t += dt;
-    }
-
-void RayTracing::toGM(Sphere* ptrTabSphere)
-    {
-    Device::malloc(&ptrDevTabSphere, sizeOctet);
-    Device::memclear(&ptrDevTabSphere, sizeOctet);
-    Device::memcpyHToD(ptrDevTabSphere, ptrTabSphere, sizeOctet);
     }
 
 /*--------------------------------------*\

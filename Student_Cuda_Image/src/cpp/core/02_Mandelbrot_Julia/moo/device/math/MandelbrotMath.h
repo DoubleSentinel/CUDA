@@ -2,6 +2,7 @@
 
 #include <math.h>
 #include "MathTools.h"
+#include "Calibreur_GPU.h"
 
 #include "ColorTools_GPU.h"
 using namespace gpu;
@@ -22,9 +23,10 @@ class MandelbrotMath
 
     public:
 
-	__device__ MandelbrotMath(uint N)
+	__device__ MandelbrotMath(uint N):
+	    calibreur(Interval<float>(0, n), Interval<float>(0, 1))
 	    {
-	    this->N = N;
+	    this->n = n;
 	    }
 
 	// constructeur copie: pas besoin car pas attribut ptr
@@ -40,37 +42,56 @@ class MandelbrotMath
 
     public:
 	__device__
-	void colorIJ(uchar4* ptrColorIJ, int i, int j, float t)
+	void colorXY(uchar4 *ptrColor, float x, float y, float t)
 	    {
-	    uchar levelGris;
-
-	    f(j, i, t, &levelGris);
-
-	    ptrColorIJ->x = levelGris;
-	    ptrColorIJ->y = levelGris;
-	    ptrColorIJ->z = levelGris;
-
-	    ptrColorIJ->w = 255; //opaque
+	    float k = getK(x, y);
+	    if(k > this->n)
+	    {
+		ptrColor->x = 0;
+		ptrColor->y = 0;
+		ptrColor->z = 0;
+	    }else
+		{
+		float hue = k;
+		calibreur.calibrer(hue);
+		ColorTools::HSB_TO_RVB(hue, ptrColor);
+		}
+		ptrColor->w = 255;
 	    }
 
     private:
 	__device__
-	void f(int i, int j, float t, uchar* ptrlevelGris)
-	    {
-	    float valDIJ = 0.0;
-	    dij(i, j, &valDIJ);
-	    *ptrlevelGris=128+127*(cosf(valDIJ/10 - t/7))/(valDIJ/10 + 1);
-
-	    for(int k = 0; k < this->N; k++)
-		{
-		//implement unreal suite
-		}
-	    }
-	__device__
-	bool isDivergente(float r, float i)
+	bool isDivergente(float z)
 	    {
 	    //If ||z(k)||² > 2² for k -> [0,N] then its diverging
-	    return (r*r + i*i)*(r*r + i*i) > 4;
+	    return z > 2.f ? true : false;
+	    }
+
+	__device__
+	int getK(float x, float y)
+	    {
+	    float zr = 0.f;
+	    float zi = 0.f;
+	    float old_zr;
+	    int k = 0;
+	    while(k <= this->n)
+		{
+		if (isDivergente(norm(zr, zi)))
+			return k;
+
+		old_zr = zr;
+		zr = pow(zr, 2) - pow(zi, 2) + x;
+		zi = 2 * old_zr * zi + y;
+
+		k++;
+		}
+	    return k;
+	    }
+
+	__device__
+	float norm(float a, float b)
+	    {
+	    return sqrt(pow(a, 2) + pow(b, 2));
 	    }
 
 	/*--------------------------------------*\
@@ -79,8 +100,11 @@ class MandelbrotMath
 
     private:
 
-	// Tools
-	int N;
+	// Input
+	uint n;
+
+	//Tools
+	Calibreur<float> calibreur;
 
     };
 

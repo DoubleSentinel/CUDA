@@ -73,7 +73,6 @@ class RayTracingMath
 			}
 		    }
 		}
-	    // Afficher la bonne couleur OU noir
 	    if (hueMin >= 0)
 		{
 		ColorTools::HSB_TO_RVB(hueMin,1.f, brightnessMin, ptrColor);
