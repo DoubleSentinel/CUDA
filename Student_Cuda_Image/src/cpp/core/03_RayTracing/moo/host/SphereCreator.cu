@@ -1,40 +1,41 @@
 #include "SphereCreator.h"
 #include "AleaTools.h"
-
 /*--------------------------------------*\
-|* Constructeur *|
+|*
+ Constructeur
+ *|
  \*-------------------------------------*/
-
 SphereCreator::SphereCreator(int nbSpheres, int w, int h, int bord)
     {
-    // Inputs
+// Inputs
     this->nbSpheres = nbSpheres;
     this->w = w;
     this->h = h;
     this->bord = bord;
-    // Outputs
+// Outputs
     this->tabSphere = new Sphere[nbSpheres];
-    // required default constructeur of type : sphere(void)
+// required default constructeur of type : sphere(void)
     createSphere();
     }
 SphereCreator::~SphereCreator()
     {
     delete[] tabSphere;
     }
-
 /*--------------------------------------*\
-|* Methode *|
+|*
+ Methode
+ *|
  \*-------------------------------------*/
-
 Sphere* SphereCreator::getTabSphere()
     {
     return tabSphere;
     }
 
 /*--------------------------------------*\
-|* Private *|
+|*
+ Private
+ *|
  \*-------------------------------------*/
-
 /**
  * example
  */
@@ -50,7 +51,7 @@ void SphereCreator::createSphere(void)
 	float rayon = aleaTools.uniformeAB(20, w / 10);
 	float hue01 = aleaTools.uniforme01();
 	tabSphere[i] = Sphere(centre, rayon, hue01);
-	// Warning : sphere stack copier dans sphere heap,
-	// ok car pas ptr dans Sphere
+// Warning : sphere stack copier dans sphere heap,
+// ok car pas ptr dans Sphere
 	}
     }

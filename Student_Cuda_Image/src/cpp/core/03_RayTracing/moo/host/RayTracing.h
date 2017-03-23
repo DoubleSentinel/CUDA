@@ -2,9 +2,10 @@
 
 #include "cudaTools.h"
 #include "MathTools.h"
+#include "Sphere.h"
+#include "SphereCreator.h"
 
 #include "Animable_I_GPU.h"
-#include "Sphere.h"
 using namespace gpu;
 
 /*----------------------------------------------------------------------*\
@@ -25,11 +26,10 @@ class RayTracing: public Animable_I<uchar4>
 
 	RayTracing(const Grid& grid, uint w, uint h, float dt);
 	virtual ~RayTracing(void);
+
 	/*--------------------------------------*\
 	 |*		Methodes		*|
 	 \*-------------------------------------*/
-
-    public:
 
 	/*-------------------------*\
 	|*   Override Animable_I   *|
@@ -51,15 +51,16 @@ class RayTracing: public Animable_I<uchar4>
 
     private:
 
-	// Time
-	float dt;
-
 	// Inputs
-	uint nbSphere;
+	float dt;
+	// Tools
+	int nbSphere;
 	Sphere* ptrDevTabSphere;
-
-	//Tools
 	size_t sizeOctet;
+
+	void toGM(Sphere*);
+	void toSM(Sphere*);
+	void toCM(Sphere*);
 
     };
 

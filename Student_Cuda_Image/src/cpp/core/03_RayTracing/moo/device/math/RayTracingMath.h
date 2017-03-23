@@ -3,6 +3,7 @@
 #include <math.h>
 #include "MathTools.h"
 #include "Sphere.h"
+
 #include "ColorTools_GPU.h"
 using namespace gpu;
 
@@ -23,16 +24,16 @@ class RayTracingMath
 
     public:
 
-	__device__ RayTracingMath(int nb_Spheres, Sphere* ptrDevTabSpheres)
+	__device__ RayTracingMath(int nbSphere, Sphere* ptrDevTabSphere)
 	    {
-	    this->nb_Spheres = nb_Spheres;
+	    this->nbSphere = nbSphere;
 	    this->ptrDevTabSphere = ptrDevTabSphere;
 	    }
 
 	// constructeur copie automatique car pas pointeur dans RayTracingMath
 
 	__device__
-	   virtual ~RayTracingMath()
+	     virtual ~RayTracingMath()
 	    {
 	    // rien
 	    }
@@ -41,52 +42,62 @@ class RayTracingMath
 	|*		Methodes		*|
 	 \*-------------------------------------*/
 
+    public:
 
 	__device__
 	void colorIJ(uchar4* ptrColor, int i, int j, float t)
 	    {
-	    float2 xySol;
-	    xySol.x = j;
-	    xySol.y = i;
-	    ptrColor->x = 0;
-	    ptrColor->y = 0;
-	    ptrColor->z = 0;
+	    float min = 10000;
+	    float hueMin = -1000;
+	    float brightnessMin = -100;
+	    //set current floor pixel position
+	    float2 xyFloor;
+	    xyFloor.x = i;
+	    xyFloor.y = j;
+	    //set current floor pixel to black
+	    ptrColor ->x = 0;
+	    ptrColor ->y = 0;
+	    ptrColor ->z = 0;
 	    ptrColor->w = 255; // opaque
-	    float min = 10000.f;
-	    float hueMin = -10000.f;
-	    float brightnessMin = -10000.f;
-	    for (int k = 0; k < nb_Spheres; k++)
+	    // iterate through spheres
+	    for (int i = 0; i < nbSphere; i++)
 		{
-		Sphere spherek = this->ptrDevTabSphere[k];
-		float hcarre = spherek.hCarre(xySol);
-		if (spherek.isEnDessous(hcarre))
-		    {
-		    float dz = spherek.dz(hcarre);
-		    float dist = spherek.distance(dz);
+		Sphere currentSphere = ptrDevTabSphere[i];
+		float hcarre = currentSphere.hCarre(xyFloor);
 
-		    if(dist < min)
+		//if the currentSphere is above the current pixel at xyFloor
+		if(currentSphere.isEnDessous(hcarre))
+		    {
+		    float dz = currentSphere.dz(hcarre);
+		    float dist = currentSphere.distance(dz);
+		    //if it's the closest sphere to the pixel, set the color
+		    if (dist < min)
 			{
 			min = dist;
-			hueMin = spherek.hue(t);
-			brightnessMin = spherek.brightness(dz);
+			hueMin = currentSphere.hue(t);
+			brightnessMin = currentSphere.brightness(dz);
 			}
 		    }
 		}
-	    if (hueMin >= 0)
+	    //apply new color to pixel if the pixel is underneath a sphere
+	    if ( hueMin > 0)
 		{
-		ColorTools::HSB_TO_RVB(hueMin,1.f, brightnessMin, ptrColor);
+		ColorTools::HSB_TO_RVB(hueMin,1.f,brightnessMin, ptrColor); // update color
 		}
 	    }
 
+    private:
 
 	/*--------------------------------------*\
 	|*		Attributs		*|
 	 \*-------------------------------------*/
 
     private:
-	//Input
-	int nb_Spheres;
+
+	// Tools
+	//input
 	Sphere* ptrDevTabSphere;
+	int nbSphere;
 
     };
 

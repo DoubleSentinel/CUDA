@@ -55,7 +55,7 @@ int mainImage(Settings& settings)
 
 //    Viewer<RipplingProvider> vague(nozoomable, 25, 25); // imageOption px py
 //    Viewer<MandelbrotProvider> mandelbrot(zoomable, 25, 25); // imageOption px py
-    Viewer<RayTracingProvider> raytracing(nozoomable, 25, 25);
+//    Viewer<RayTracingProvider> raytracing(nozoomable, 25, 25);
     // Common
     GLUTImageViewers::runALL(); // Bloquant, Tant qu'une fenetre est ouverte
 

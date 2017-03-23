@@ -1,10 +1,7 @@
-#include "RayTracing.h"
-
 #include <iostream>
-#include <assert.h>
-
 #include "Device.h"
-#include "SphereCreator.h"
+#include "RayTracing.h"
+#include <assert.h>
 
 using std::cout;
 using std::endl;
@@ -17,7 +14,8 @@ using std::endl;
  |*		Imported	 	*|
  \*-------------------------------------*/
 
-extern __global__ void rayTracing(uchar4* ptrDevPixels,int nbspheres, Sphere* ptrDevTabSphere,uint w, uint h,float t);
+extern __global__ void raytracing(uchar4* ptrDevPixels,uint w, uint h,float t, int nbSphere, Sphere* ptrDevTabSphere);
+
 
 /*--------------------------------------*\
  |*		Public			*|
@@ -42,25 +40,25 @@ extern __global__ void rayTracing(uchar4* ptrDevPixels,int nbspheres, Sphere* pt
 RayTracing::RayTracing(const Grid& grid, uint w, uint h, float dt) :
 	Animable_I<uchar4>(grid, w, h, "RayTracing_Cuda_Luy")
     {
-    // Time
-    this->dt = dt;
 
     // Inputs
+    this->dt = dt;
+
+    // Tools
     this->t = 0; // protected dans Animable
-    this->nbSphere = 2;
+
+    // Tools
+    this->nbSphere = 10;
     this->sizeOctet = sizeof(Sphere)*nbSphere;
-    SphereCreator sphereCreator(nbSphere, w, h);
+    SphereCreator sphereCreator = SphereCreator(nbSphere, w, h);
     Sphere* ptrTabSphere = sphereCreator.getTabSphere();
-    // MM
-	{
-	Device::malloc(&ptrDevTabSphere, sizeOctet);
-	Device::memclear(ptrDevTabSphere, sizeOctet);
-	Device::memcpyHToD(ptrDevTabSphere, ptrTabSphere, sizeOctet);
-	}
+
+    this->toGM(ptrTabSphere);
     }
 
 RayTracing::~RayTracing()
     {
+    //MM free memory
     Device::free(ptrDevTabSphere);
     }
 
@@ -76,11 +74,11 @@ RayTracing::~RayTracing()
  */
 void RayTracing::process(uchar4* ptrDevPixels, uint w, uint h, const DomaineMath& domaineMath)
     {
-    Device::lastCudaError("rayTracing rgba uchar4 (before)"); // facultatif, for debug only, remove for release
+    Device::lastCudaError("RayTracing rgba uchar4 (before kernel)"); // facultatif, for debug only, remove for release
 
-    rayTracing<<<dg,db>>>(ptrDevPixels, this->nbSphere, this->ptrDevTabSphere,w,h,t);
+    raytracing<<<dg,db>>>(ptrDevPixels,w,h,t,this->nbSphere, this->ptrDevTabSphere);
 
-    Device::lastCudaError("rayTracing rgba uchar4 (after)"); // facultatif, for debug only, remove for release
+    Device::lastCudaError("RayTracing rgba uchar4 (after kernel)"); // facultatif, for debug only, remove for release
     }
 
 /**
@@ -95,7 +93,27 @@ void RayTracing::animationStep()
 /*--------------------------------------*\
  |*		Private			*|
  \*-------------------------------------*/
+void RayTracing::toGM(Sphere* ptrTabSphere)
+    {
+    // MM (malloc/memclear Device)
+    	{
+    	Device::malloc(&ptrDevTabSphere, sizeOctet);
+    	Device::memclear(ptrDevTabSphere, sizeOctet);
+    	}
 
+    // MM (copy Host->Device)
+    	{
+    	Device::memcpyHToD(ptrDevTabSphere, ptrTabSphere, sizeOctet);
+    	}
+    }
+void RayTracing::toCM(Sphere* ptrTabSphere)
+    {
+    return;
+    }
+void RayTracing::toSM(Sphere* ptrTabSphere)
+    {
+    return;
+    }
 /*----------------------------------------------------------------------*\
  |*			End	 					*|
  \*---------------------------------------------------------------------*/
