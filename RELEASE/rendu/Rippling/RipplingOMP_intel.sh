@@ -1,2 +1,2 @@
-#/bin/bash
-cbirt intel ./RipplingOMP_intel.run
+#!/bin/bash
+cbirt intel gl ./RipplingOMP_intel.run

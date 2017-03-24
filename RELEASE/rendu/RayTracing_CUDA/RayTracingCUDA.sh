@@ -1,2 +1,2 @@
-#/bin/bash
-cbirt ./RayTracingCUDA.run
+#!/bin/bash
+cbirt gl ./RayTracingCUDA.run

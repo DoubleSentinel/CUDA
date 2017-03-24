@@ -1,2 +1,2 @@
-#/bin/bash
-cbirt ./RipplingOMP_gcc.run
+#!/bin/bash
+cbirt gl ./RipplingOMP_gcc.run

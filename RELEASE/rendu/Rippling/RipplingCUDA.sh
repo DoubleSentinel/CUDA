@@ -1,2 +1,2 @@
-#/bin/bash
-cbirt ./RipplingCUDA.run
+#!/bin/bash
+cbirt gl ./RipplingCUDA.run

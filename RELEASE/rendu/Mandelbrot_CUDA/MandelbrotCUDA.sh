@@ -1,2 +1,2 @@
-#/bin/bash
-cbirt ./MandelbrotCUDA.run
+#!/bin/bash
+cbirt gl ./MandelbrotCUDA.run
